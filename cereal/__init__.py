@@ -153,14 +153,11 @@ class ASN1Transcoder(object):
     elif isinstance(value, complex):
       return self.__encode_complex(value)
 
-    elif isinstance(value, (bytes, bytearray)):
-      return univ.OctetString(value)
+    elif isinstance(value, (bytes, bytearray, six.binary_type)):
+      return univ.OctetString(bytearray(value))
 
     elif isinstance(value, six.text_type):
       return char.UTF8String(value.encode('utf8'))
-
-    elif isinstance(value, six.binary_type):
-      return univ.OctetString(bytearray(value))
 
     elif isinstance(value, collections.Mapping):
       return self.__encode_mapping(value)
