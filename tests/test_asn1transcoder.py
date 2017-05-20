@@ -14,6 +14,33 @@ def transcoder():
   return ASN1Transcoder()
 
 
+@pytest.fixture
+def nested_data():
+  theset = set()
+  theset.add(1)
+  theset.add(2)
+  theset.add(1)
+
+  from collections import OrderedDict
+  x = OrderedDict()
+  x['baz'] = 42
+  x['foo'] = 'bar'
+
+  return {
+    'set': theset,
+    'none': None,
+    'numbers': {
+      'int': 42,
+      'float': 3.1415,
+      'complex': complex(1, -2),
+    },
+    'list': ['y', 'n'],
+    'bools': (True, False),
+    'strings': ("hällo",u"hällo",b"hallo"),
+    'dict': x,
+  }
+
+
 def set_testing(transcoder, tag, values):
   for value in values:
     # Encoding must result in the expected tag set
@@ -81,7 +108,36 @@ def test_list(transcoder):
   set_testing(transcoder, '[0:32:16]+[128:32:3]', ([1, 'a'], ))
 
 
+def test_dict_sorting():
+  # OrderedDict keeps keys in insertion order, so the following two are
+  # distinct.
+  from collections import OrderedDict
+  x = OrderedDict()
+  x['foo'] = 'bar'
+  x['baz'] = 42
+  y = OrderedDict()
+  y['baz'] = 42
+  y['foo'] = 'bar'
+  assert x != y
+
+  # Default encoding will sort by keys, so would make the dicts equal
+  from cereal import ASN1Transcoder
+
+  tc1 = ASN1Transcoder()
+  x1 = tc1.encode(x)
+  y1 = tc1.encode(y)
+  assert x1 == y1
+
+  # With sorting turned off, they should not be.
+  tc2 = ASN1Transcoder(sort = False)
+  x2 = tc2.encode(x)
+  y2 = tc2.encode(y)
+  assert x2 != y2
+
+
+def test_nested(transcoder, nested_data):
+  decoded = transcoder.decode(transcoder.encode(nested_data))
+  assert decoded == nested_data
+
 # TODO
-# - nested types
-# - dict without sorting
 # - registry
