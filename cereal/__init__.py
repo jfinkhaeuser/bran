@@ -120,8 +120,9 @@ class ASN1Transcoder(object):
 
     Keyword arguments are stored as options. Some such recognized options are:
 
-    :param bool sort: If True, encodes collections.Mappings in sorted key
-        order (using the sorted() function). The default is True.
+    :param bool sort: Either a key sorting function, or False. If False, no
+        sorting is performed. The default is to perform key sorting using the
+        sorted() function.
     """
     self.options = kwargs
 
@@ -205,8 +206,9 @@ class ASN1Transcoder(object):
 
     # Force ordering of keys by default
     keys = value.keys()
-    if self.options.get('sort', True):
-      keys = sorted(keys)
+    sorter = self.options.get('sort', sorted)
+    if sorter is not False:
+      keys = sorter(keys)
 
     for idx, key in enumerate(keys):
       val.setComponentByPosition(idx, self.encode((key, value[key])))
@@ -219,8 +221,9 @@ class ASN1Transcoder(object):
 
     # Force ordering of items by default
     items = value
-    if self.options.get('sort', True):
-      items = sorted(items)
+    sorter = self.options.get('sort', sorted)
+    if sorter is not False:
+      items = sorter(items)
 
     for idx, item in enumerate(items):
       val.setComponentByPosition(idx, self.encode(item))

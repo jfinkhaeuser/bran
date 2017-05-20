@@ -134,6 +134,12 @@ def test_dict_sorting():
   y2 = tc2.encode(y)
   assert x2 != y2
 
+  # Try a sorting function. If we use an inverting function, y put
+  # through the transcoder should equal x
+  tc3 = ASN1Transcoder(sort = reversed)
+  y3 = tc3.decode(tc3.encode(y))
+  assert x == y3
+
 
 def test_nested(transcoder, nested_data):
   decoded = transcoder.decode(transcoder.encode(nested_data))
@@ -141,3 +147,4 @@ def test_nested(transcoder, nested_data):
 
 # TODO
 # - registry
+
