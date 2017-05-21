@@ -82,7 +82,7 @@ class ASN1Transcoder(object):
   comparable nested structure, which is all that often times is required.
   """
 
-  from pyasn1.type import univ, tag, namedtype
+  from pyasn1.type import univ, tag
 
   #: Tags for complex
   COMPLEX = univ.Sequence(
@@ -123,6 +123,11 @@ class ASN1Transcoder(object):
     :param bool sort: Either a key sorting function, or False. If False, no
         sorting is performed. The default is to perform key sorting using the
         sorted() function.
+    :param Mapping registry: A collections.Mapping, with keys specifying either
+        Python types (not names/strings, but the type objects), or ASN.1 tags
+        (stringified, e.g. "[0:0:6]"). The value must be a callable that
+        converts from objects of the Python type to an ASN.1 object or from an
+        ASN.1 object matching the stringified tag to a Python object.
     """
     self.options = kwargs
 
@@ -172,8 +177,21 @@ class ASN1Transcoder(object):
       return self.__encode_from_registry(value)
 
   def __encode_from_registry(self, value):
-    # TODO type registry
-    raise TypeError('Cannot encode value of type "%s"!' % (type(value),))
+    registry = self.options.get('registry', {})
+
+    # If we find the value class in the registry, we can use that to create
+    # a custom ASN.1 type.
+    klass = type(value)
+    encoder = registry.get(klass, None)
+    if encoder is None:
+      raise TypeError('Cannot encode value of type "%s"!' % (klass,))
+
+    if not callable(encoder):
+      raise ValueError('Bad registry entry "%s" for class "%s"; expect a '
+          'callable!' % (encoder, klass))
+
+    # First call is for encoding
+    return encoder(value)
 
   def __encode_complex(self, value):
     # Encode complex() values
@@ -256,14 +274,12 @@ class ASN1Transcoder(object):
       return text_type(value)
 
     elif isinstance(value, univ.OctetString):
-      # FIXME? bytes? non-unicode string?
       from six import binary_type
       return binary_type(value)
 
     elif isinstance(value, univ.Sequence):
       # Look for sub type tags
       if value.isSameTypeWith(ASN1Transcoder.COMPLEX):
-        # FIXME this is what we want; if this doesn't work, fix encoding order!
         return complex(
             self.decode(value.getComponentByPosition(0)),
             self.decode(value.getComponentByPosition(1))
@@ -288,7 +304,24 @@ class ASN1Transcoder(object):
       return ret
 
     else:
-      raise TypeError("Can't decode!")  # FIXME registry
+      return self.__decode_from_registry(value)
+
+  def __decode_from_registry(self, value):
+    registry = self.options.get('registry', {})
+
+    # If we find the value tagset in the registry, we can use that to create
+    # a custom ASN.1 type.
+    tagset = str(value.tagSet)
+    decoder = registry.get(tagset, None)
+    if decoder is None:
+      raise TypeError('Cannot decode value tag set "%s"!' % (tagset,))
+
+    if not callable(decoder):
+      raise ValueError('Bad registry entry "%s" for tag set "%s"; expect a '
+          'callable!' % (decoder, tagset))
+
+    # First call is for encoding
+    return decoder(value)
 
   def __sequence_iter(self, seq):
     # Iterate through a univ.Sequence, decode and yield each item
