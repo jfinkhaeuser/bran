@@ -82,38 +82,6 @@ class ASN1Transcoder(object):
   comparable nested structure, which is all that often times is required.
   """
 
-  from pyasn1.type import univ, tag
-
-  #: Tags for complex
-  COMPLEX = univ.Sequence(
-    tagSet = univ.Sequence.tagSet.tagExplicitly(
-      tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0x01)
-    )
-  )
-  #: Tags for collections.Sequence
-  TUPLE = univ.Sequence(
-    tagSet = univ.Sequence.tagSet.tagExplicitly(
-      tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0x02)
-    )
-  )
-  LIST = univ.Sequence(
-    tagSet = univ.Sequence.tagSet.tagExplicitly(
-      tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0x03)
-    )
-  )
-  #: Tags for collections.Mapping
-  MAPPING = univ.Sequence(
-    tagSet = univ.Sequence.tagSet.tagExplicitly(
-      tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0x04)
-    )
-  )
-  #: Tags for collections.Set
-  SET = univ.Set(
-    tagSet = univ.Set.tagSet.tagExplicitly(
-      tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0x05)
-    )
-  )
-
   def __init__(self, **kwargs):
     """
     Initialize the transcoder.
@@ -130,6 +98,40 @@ class ASN1Transcoder(object):
         ASN.1 object matching the stringified tag to a Python object.
     """
     self.options = kwargs
+
+    from pyasn1.type import univ, tag
+
+    # Tags for complex
+    self.COMPLEX = univ.Sequence(
+      tagSet = univ.Sequence.tagSet.tagExplicitly(
+        tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0x01)
+      )
+    )
+    # Tags for collections.Sequence
+    self.TUPLE = univ.Sequence(
+      tagSet = univ.Sequence.tagSet.tagExplicitly(
+        tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0x02)
+      )
+    )
+    self.LIST = univ.Sequence(
+      tagSet = univ.Sequence.tagSet.tagExplicitly(
+        tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0x03)
+      )
+    )
+    # Tags for collections.Mapping
+    self.MAPPING = univ.Sequence(
+      tagSet = univ.Sequence.tagSet.tagExplicitly(
+        tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0x04)
+      )
+    )
+    # Tags for collections.Set
+    self.SET = univ.Set(
+      tagSet = univ.Set.tagSet.tagExplicitly(
+        tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0x05)
+      )
+    )
+
+
 
   def encode(self, value):
     """
@@ -195,7 +197,7 @@ class ASN1Transcoder(object):
 
   def __encode_complex(self, value):
     # Encode complex() values
-    val = ASN1Transcoder.COMPLEX.clone()
+    val = self.COMPLEX.clone()
 
     val.setComponentByPosition(0, self.encode(value.real))
     val.setComponentByPosition(1, self.encode(value.imag))
@@ -204,9 +206,9 @@ class ASN1Transcoder(object):
 
   def __encode_sequence(self, value):
     # Everything except for lists get coerced to a tuple
-    base = ASN1Transcoder.TUPLE
+    base = self.TUPLE
     if isinstance(value, list):
-      base = ASN1Transcoder.LIST
+      base = self.LIST
     val = base.clone()
 
     # Sequences can't be re-ordered
@@ -217,7 +219,7 @@ class ASN1Transcoder(object):
 
   def __encode_mapping(self, value):
     # coerce to dict
-    val = ASN1Transcoder.MAPPING.clone()
+    val = self.MAPPING.clone()
 
     # Force ordering of keys by default
     keys = value.keys()
@@ -232,7 +234,7 @@ class ASN1Transcoder(object):
 
   def __encode_set(self, value):
     # Everything is a set
-    val = ASN1Transcoder.SET.clone()
+    val = self.SET.clone()
 
     # Force ordering of items by default
     items = value
@@ -279,19 +281,19 @@ class ASN1Transcoder(object):
 
     elif isinstance(value, univ.Sequence):
       # Look for sub type tags
-      if value.isSameTypeWith(ASN1Transcoder.COMPLEX):
+      if value.isSameTypeWith(self.COMPLEX):
         return complex(
             self.decode(value.getComponentByPosition(0)),
             self.decode(value.getComponentByPosition(1))
         )
 
-      if value.isSameTypeWith(ASN1Transcoder.TUPLE):
+      if value.isSameTypeWith(self.TUPLE):
         return tuple(self.__sequence_iter(value))
 
-      if value.isSameTypeWith(ASN1Transcoder.LIST):
+      if value.isSameTypeWith(self.LIST):
         return list(self.__sequence_iter(value))
 
-      if value.isSameTypeWith(ASN1Transcoder.MAPPING):
+      if value.isSameTypeWith(self.MAPPING):
         ret = {}
         for key, value in self.__sequence_iter(value):
           ret[key] = value
