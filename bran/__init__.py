@@ -219,8 +219,9 @@ class ASN1Transcoder(object):
     # coerce to dict
     val = self.MAPPING.clone()
 
-    # Force ordering of keys by default
-    keys = value.keys()
+    # Force ordering of keys by default. Turn keys into a list for Python 3.4
+    # compatibility.
+    keys = list(value.keys())
     sorter = self.options.get('sort', sorted)
     if sorter is not False:
       keys = sorter(keys)
