@@ -101,5 +101,5 @@ Licensed under MITNFA (MIT +no-false-attribs) License. See the
    :target: https://travis-ci.org/jfinkhaeuser/bran
 .. |PyPI| image:: https://img.shields.io/pypi/v/bran.svg?maxAge=2592000
    :target: https://pypi.python.org/pypi/bran/
-.. |Docs| image:: https://readthedocs.org/projects/bran/badge/?version=latest
-   :target: http://bran.readthedocs.io/en/latest/
+.. |Docs| image:: https://readthedocs.org/projects/pybran/badge/?version=latest
+   :target: http://pybran.readthedocs.io/en/latest/
