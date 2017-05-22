@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Test suite for cereal.ASN1Transcoder."""
+"""Test suite for bran.ASN1Transcoder."""
 
 __author__ = 'Jens Finkhaeuser'
 __copyright__ = 'Copyright (c) 2017 Jens Finkhaeuser'
@@ -10,7 +10,7 @@ import pytest
 
 @pytest.fixture
 def transcoder():
-  from cereal import ASN1Transcoder
+  from bran import ASN1Transcoder
   return ASN1Transcoder()
 
 class Foo(object):
@@ -98,7 +98,7 @@ def test_dict_sorting():
   assert x != y
 
   # Default encoding will sort by keys, so would make the dicts equal
-  from cereal import ASN1Transcoder
+  from bran import ASN1Transcoder
 
   tc1 = ASN1Transcoder()
   x1 = tc1.encode(x)
@@ -124,7 +124,7 @@ def test_nested(transcoder, nested_data):
 
 
 def test_registry_basics():
-  from cereal import ASN1Transcoder
+  from bran import ASN1Transcoder
 
   test = { 'foo': Foo() }
 
@@ -155,7 +155,7 @@ def test_registry_basics():
 
 
 def test_registry_no_callable():
-  from cereal import ASN1Transcoder
+  from bran import ASN1Transcoder
 
   registry = {
     Foo: 'not a callable',

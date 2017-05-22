@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Test suite for cereal.DERTranscoder."""
+"""Test suite for bran.DERTranscoder."""
 
 __author__ = 'Jens Finkhaeuser'
 __copyright__ = 'Copyright (c) 2017 Jens Finkhaeuser'
@@ -10,7 +10,7 @@ import pytest
 
 @pytest.fixture
 def transcoder():
-  from cereal import DERTranscoder
+  from bran import DERTranscoder
   return DERTranscoder()
 
 

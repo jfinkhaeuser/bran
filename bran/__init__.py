@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Cereal provides DER-Encoded ASN.1 Serialization and Deserialization.
+Bran provides DER-Encoded ASN.1 Serialization and Deserialization.
 
 Other serialization methods abound, but DER-encoded ASN.1 is used in
 cryptography for one particular reason: given the same object, its encoding
@@ -130,8 +130,6 @@ class ASN1Transcoder(object):
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0x05)
       )
     )
-
-
 
   def encode(self, value):
     """

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Test suite for cereal."""
+"""Test suite for bran."""
 
 __author__ = 'Jens Finkhaeuser'
 __copyright__ = 'Copyright (c) 2017 Jens Finkhaeuser'

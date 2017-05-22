@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Dist utils for Cereal.
+Dist utils for Bran.
 
 This should work within tox, and install all required dependencies for testing.
 """
@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
   # Run setup
   setup(
-      name = 'cereal',
+      name = 'bran',
       version = '0.1.0',
       description = 'DER-Encoded ASN.1 Serialization and Deserialization',
       long_description = open('README.rst').read(),
@@ -47,7 +47,7 @@ if __name__ == '__main__':
       keywords = 'ASN.1 DER serialization',
       author = 'Jens Finkhaeuser',
       author_email = 'jens@finkhaeuser.de',
-      url = 'https://github.com/jfinkhaeuser/cereal',
+      url = 'https://github.com/jfinkhaeuser/bran',
       license = 'MITNFA',
       packages = find_packages(exclude = ['ez_setup', 'examples', 'tests']),
       include_package_data = True,
