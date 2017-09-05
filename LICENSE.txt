@@ -1,4 +1,4 @@
-Copyright (C) Jens Finkhaeuser and other Cereal contributors. All rights
+Copyright (C) Jens Finkhaeuser and other bran contributors. All rights
 not covered below are reserved.
 
 MIT +no-false-attribs License
