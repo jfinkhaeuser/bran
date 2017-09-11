@@ -197,8 +197,8 @@ class ASN1Transcoder(object):
     # Encode complex() values
     val = self.COMPLEX.clone()
 
-    val.setComponentByPosition(0, self.encode(value.real))
-    val.setComponentByPosition(1, self.encode(value.imag))
+    val[0] = self.encode(value.real)
+    val[1] = self.encode(value.imag)
 
     return val
 
@@ -211,7 +211,7 @@ class ASN1Transcoder(object):
 
     # Sequences can't be re-ordered
     for idx, item in enumerate(value):
-      val.setComponentByPosition(idx, self.encode(item))
+      val[idx] = self.encode(item)
 
     return val
 
@@ -227,7 +227,7 @@ class ASN1Transcoder(object):
       keys = sorter(keys)
 
     for idx, key in enumerate(keys):
-      val.setComponentByPosition(idx, self.encode((key, value[key])))
+      val[idx] = self.encode((key, value[key]))
 
     return val
 
@@ -242,7 +242,7 @@ class ASN1Transcoder(object):
       items = sorter(items)
 
     for idx, item in enumerate(items):
-      val.setComponentByPosition(idx, self.encode(item))
+      val[idx] = self.encode(item)
 
     return val
 
@@ -282,9 +282,10 @@ class ASN1Transcoder(object):
       # Look for sub type tags
       if value.isSameTypeWith(self.COMPLEX):
         return complex(
-            self.decode(value.getComponentByPosition(0)),
-            self.decode(value.getComponentByPosition(1))
+            self.decode(value[0]),
+            self.decode(value[1])
         )
+
 
       if value.isSameTypeWith(self.TUPLE):
         return tuple(self.__sequence_iter(value))
@@ -329,7 +330,7 @@ class ASN1Transcoder(object):
     idx = 0
     while True:
       try:
-        item = self.decode(seq.getComponentByPosition(idx))
+        item = self.decode(seq[idx])
         yield item
         idx += 1
       except IndexError:
