@@ -4,11 +4,16 @@ Bran provides transcoders for `ASN.1 <https://en.wikipedia.org/wiki/Abstract_Syn
 serialization and deserialization, and `DER <https://en.wikipedia.org/wiki/X.690#DER_encoding>`__-encoding.
 
 The purpose is to provide a serialization format for native Python types,
-such as nested dicts, whose serialization is unambiguous and stable, that
+such as nested dicts, whose serialization is unambiguous and stable. That
 is two values with the same contents serialize to the same byte string.
 
 That makes it possible to create hashes and MACs to verify message
 integrity.
+
+Note that this does *not* make this package a full implementation of ``ASN.1``
+specs. That is not the goal. The goal is just to have a stable byte
+representation of Python values; ``DER`` in particular is only picked because
+it helps in this.
 
 Usage
 =====
@@ -32,9 +37,9 @@ class.
     assert decoded == test
 
 In order for bran to be this simple to use, some assumptions are made. The
-one with the most impact is that it treats *any* ``collections.Mapping`` will
-be encoded to the same byte representation, which means when decoded, it will
-become a Python ``dict``. Similar assumptions are made for ``collections.Set``
+one with the most impact is that *any* ``collections.Mapping`` will be encoded
+to the same byte representation, which means when decoded, it will become a
+Python ``dict``. Similar assumptions are made for ``collections.Set``
 and ``collections.Sequence``.
 
 Setup
