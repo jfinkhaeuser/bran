@@ -286,7 +286,6 @@ class ASN1Transcoder(object):
             self.decode(value[1])
         )
 
-
       if value.isSameTypeWith(self.TUPLE):
         return tuple(self.__sequence_iter(value))
 
