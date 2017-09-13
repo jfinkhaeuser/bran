@@ -67,6 +67,9 @@ def test_text(transcoder):
 
 def test_dict(transcoder):
   from collections import OrderedDict
+  # String keys
+  set_testing(transcoder, '[0:32:16]+[128:32:4]', ({'a':2}, OrderedDict({'a':2})))
+  # Numeric keys
   set_testing(transcoder, '[0:32:16]+[128:32:4]', ({1:2}, OrderedDict({1:2})))
 
 
