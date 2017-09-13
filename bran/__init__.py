@@ -335,3 +335,4 @@ class ASN1Transcoder(object):
         idx += 1
       except IndexError:
         break
+    raise StopIteration
