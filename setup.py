@@ -56,7 +56,7 @@ if __name__ == '__main__':
       packages = find_packages(exclude = ['ez_setup', 'examples', 'tests']),
       include_package_data = True,
       install_requires = [
-        'six~=1.10',
+        'six~=1.11',
         'pyasn1~=0.2,<0.3',
       ],
       extras_require = {
