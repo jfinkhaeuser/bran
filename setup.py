@@ -28,7 +28,7 @@ if __name__ == '__main__':
   # Run setup
   setup(
       name = 'bran',
-      version = '0.1.2',
+      version = '0.2.0',
       description = 'DER-Encoded ASN.1 Serialization and Deserialization',
       long_description = open('README.rst').read(),
       # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
