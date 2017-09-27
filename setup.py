@@ -57,7 +57,7 @@ if __name__ == '__main__':
       include_package_data = True,
       install_requires = [
         'six~=1.11',
-        'pyasn1~=0.2,<0.3',
+        'pyasn1~=0.3,>=0.3.6',
       ],
       extras_require = {
         'dev': dev_require,
