@@ -1,4 +1,6 @@
-|Build Status| |PyPI| |Docs|
+|Build Status| |Docs| |License|
+|PyPI| |Python Versions| |Package Format| |Package Status|
+
 
 Bran provides transcoders for `ASN.1 <https://en.wikipedia.org/wiki/Abstract_Syntax_Notation_One>`__
 serialization and deserialization, and `DER <https://en.wikipedia.org/wiki/X.690#DER_encoding>`__-encoding.
@@ -42,59 +44,10 @@ to the same byte representation, which means when decoded, it will become a
 Python ``dict``. Similar assumptions are made for ``collections.Set``
 and ``collections.Sequence``.
 
-Setup
------
+Contributing
+============
 
-Use
-`virtualenv <http://docs.python-guide.org/en/latest/dev/virtualenvs/>`__
-to create a virtual environment and change to it or not, as you see fit.
-
-Then install the requirements:
-
-.. code:: bash
-
-    $ pip install -r requirements.txt
-
-Documentation
--------------
-
-After setup, run the following to generate documentation:
-
-.. code:: bash
-
-    $ python setup.py build_sphinx
-
-Development
------------
-
-Test Execution
-~~~~~~~~~~~~~~
-
-Run the whole test suite:
-
-.. code:: bash
-
-    $ python setup.py test
-
-Run a single test scenario:
-
-.. code:: bash
-
-    $ pytest tests/test_asn1transcoder.py::test_none
-
-Run tests on multiple Python versions:
-
-.. code:: bash
-
-    $ tox
-
-Run tests on Python 2.7:
-
-.. code:: bash
-
-    $ tox -e py27
-
-A simple test coverage report is automatically generated.
+See `CONTRIBUTING.md <https://github.com/jfinkhaeuser/bran/blob/master/CONTRIBUTING.md>`__ for details.
 
 License
 =======
@@ -104,7 +57,15 @@ Licensed under MITNFA (MIT +no-false-attribs) License. See the
 
 .. |Build Status| image:: https://travis-ci.org/jfinkhaeuser/bran.svg?branch=master
    :target: https://travis-ci.org/jfinkhaeuser/bran
-.. |PyPI| image:: https://img.shields.io/pypi/v/bran.svg?maxAge=2592000
-   :target: https://pypi.python.org/pypi/bran/
 .. |Docs| image:: https://readthedocs.org/projects/pybran/badge/?version=latest
    :target: http://pybran.readthedocs.io/en/latest/
+.. |License| image:: https://img.shields.io/pypi/l/bran.svg
+   :target: https://pypi.python.org/pypi/bran/
+.. |PyPI| image:: https://img.shields.io/pypi/v/bran.svg?maxAge=2592000
+   :target: https://pypi.python.org/pypi/bran/
+.. |Package Format| image:: https://img.shields.io/pypi/format/bran.svg
+   :target: https://pypi.python.org/pypi/bran/
+.. |Python Versions| image:: https://img.shields.io/pypi/pyversions/bran.svg
+   :target: https://pypi.python.org/pypi/bran/
+.. |Package Status| image:: https://img.shields.io/pypi/status/bran.svg
+   :target: https://pypi.python.org/pypi/bran/
