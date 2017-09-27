@@ -15,7 +15,7 @@ if __name__ == '__main__':
 
   dev_require = [
     'tox>=2.8',
-    'bumpversion>=0.5',
+    'bump2version>=0.5',
     'pytest>=3.2',
     'pytest-cov>=2.5',
     'flake8>=3.4',
