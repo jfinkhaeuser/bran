@@ -12,6 +12,6 @@ def test_pyasn1_version():
   from pyasn1 import __version__
   major, minor, patch = [int(x) for x in __version__.split('.')]
   assert major == 0
-  assert minor in (2, 3)
+  assert minor >= 2
   if minor == 3:
     assert patch >= 6
