@@ -48,19 +48,18 @@ For the purpose of hashing, consider the following code:
 
 .. code:: python
 
-    import bran.hash
+    from bran.hash import hasher
 
     test = { 'some': { 'nested': 42, 'value': (0, 1, False) } }
 
-    hasher = hash.hasher()
-    hasher.update(test)
-    hasher.hexdigest()  # yields SHA512 hash of the DER serialized test
+    h = hasher()
+    h.update(test)
+    print(h.hexdigest())  # yields SHA512 hash of the DER serialized test
 
     import hashlib
-    hasher = hash.hasher(hashfunc = hashlib.md5)
-    hasher.update(test)
-    hasher.hexdigest()  # yields MD5 hash of the DER serialized test
-
+    h = hasher(hashfunc = hashlib.md5)
+    h.update(test)
+    print(h.hexdigest())  # yields MD5 hash of the DER serialized test
 
 Contributing
 ============
