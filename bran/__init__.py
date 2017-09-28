@@ -12,7 +12,7 @@ For much the same reason, DER-encoded ASN.1 is useful in other contexts.
 __author__ = 'Jens Finkhaeuser'
 __copyright__ = 'Copyright (c) 2017 Jens Finkhaeuser'
 __license__ = 'MIT +no-false-attribs'
-__all__ = ()
+__all__ = ('hash')
 __version__ = '0.2.0'
 
 
