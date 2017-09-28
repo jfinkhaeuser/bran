@@ -1,4 +1,4 @@
-|Build Status| |Docs| |License|
+|Posix Build Status| |Windows Build Status| |Docs| |License|
 |PyPI| |Python Versions| |Package Format| |Package Status|
 
 
@@ -72,8 +72,10 @@ License
 Licensed under MITNFA (MIT +no-false-attribs) License. See the
 `LICENSE.txt <https://github.com/jfinkhaeuser/bran/blob/master/LICENSE.txt>`__ file for details.
 
-.. |Build Status| image:: https://travis-ci.org/jfinkhaeuser/bran.svg?branch=master
+.. |Posix Build Status| image:: https://travis-ci.org/jfinkhaeuser/bran.svg?branch=master
    :target: https://travis-ci.org/jfinkhaeuser/bran
+.. |Windows Build Status| image:: https://ci.appveyor.com/api/projects/status/tfl0wl9mvg5dvsid/branch/master?svg=true
+   :target: https://ci.appveyor.com/project/jfinkhaeuser/bran
 .. |Docs| image:: https://readthedocs.org/projects/pybran/badge/?version=latest
    :target: http://pybran.readthedocs.io/en/latest/
 .. |License| image:: https://img.shields.io/pypi/l/bran.svg
