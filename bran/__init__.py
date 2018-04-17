@@ -13,7 +13,7 @@ __author__ = 'Jens Finkhaeuser'
 __copyright__ = 'Copyright (c) 2017-2018 Jens Finkhaeuser'
 __license__ = 'MIT +no-false-attribs'
 __all__ = ('hash')
-__version__ = '0.3.0'
+__version__ = '0.4.0'
 
 
 class DERTranscoder(object):
