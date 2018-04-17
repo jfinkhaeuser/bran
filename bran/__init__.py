@@ -10,7 +10,7 @@ For much the same reason, DER-encoded ASN.1 is useful in other contexts.
 """
 
 __author__ = 'Jens Finkhaeuser'
-__copyright__ = 'Copyright (c) 2017 Jens Finkhaeuser'
+__copyright__ = 'Copyright (c) 2017-2018 Jens Finkhaeuser'
 __license__ = 'MIT +no-false-attribs'
 __all__ = ('hash')
 __version__ = '0.3.0'
@@ -278,7 +278,7 @@ class ASN1Transcoder(object):
       from six import binary_type
       return binary_type(value)
 
-    elif isinstance(value, univ.Sequence):
+    elif isinstance(value, (univ.Sequence, univ.SequenceOf)):
       # Look for sub type tags
       if value.isSameTypeWith(self.COMPLEX):
         return complex(
@@ -298,7 +298,7 @@ class ASN1Transcoder(object):
           ret[key] = value
         return ret
 
-    elif isinstance(value, univ.Set):
+    elif isinstance(value, (univ.Set, univ.SetOf)):
       ret = set()
       for item in self.__sequence_iter(value):
         ret.add(item)
@@ -312,7 +312,8 @@ class ASN1Transcoder(object):
 
     # If we find the value tagset in the registry, we can use that to create
     # a custom ASN.1 type.
-    tagset = str(value.tagSet)
+    from .util import stringify
+    tagset = stringify(value.tagSet)
     decoder = registry.get(tagset, None)
     if decoder is None:
       raise TypeError('Cannot decode value tag set "%s"!' % (tagset,))

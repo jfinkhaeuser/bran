@@ -2,7 +2,7 @@
 """Test suite for bran.ASN1Transcoder."""
 
 __author__ = 'Jens Finkhaeuser'
-__copyright__ = 'Copyright (c) 2017 Jens Finkhaeuser'
+__copyright__ = 'Copyright (c) 2017-2018 Jens Finkhaeuser'
 __license__ = 'MIT +no-false-attribs'
 __all__ = ()
 
@@ -19,10 +19,11 @@ class Foo(object):
 
 
 def set_testing(transcoder, tag, values):
+  from bran.util import stringify
   for value in values:
     # Encoding must result in the expected tag set
     encoded = transcoder.encode(value)
-    assert str(encoded.getTagSet()) == tag
+    assert stringify(encoded.getTagSet()) == tag
 
     # Decoding must restore the value
     decoded = transcoder.decode(encoded)
