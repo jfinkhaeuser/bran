@@ -1,0 +1,419 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>bran &#8212; bran 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for bran</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Bran provides DER-Encoded ASN.1 Serialization and Deserialization.</span>
+
+<span class="sd">Other serialization methods abound, but DER-encoded ASN.1 is used in</span>
+<span class="sd">cryptography for one particular reason: given the same object, its encoding</span>
+<span class="sd">is the same, which means hashes over its encoded form are.</span>
+
+<span class="sd">For much the same reason, DER-encoded ASN.1 is useful in other contexts.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Jens Finkhaeuser&#39;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Copyright (c) 2017-2018 Jens Finkhaeuser&#39;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s1">&#39;MIT +no-false-attribs&#39;</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;hash&#39;</span><span class="p">)</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;0.4.0&#39;</span>
+
+
+<div class="viewcode-block" id="DERTranscoder"><a class="viewcode-back" href="../api/bran.html#bran.DERTranscoder">[docs]</a><span class="k">class</span> <span class="nc">DERTranscoder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  DER-encode Python builtin (and extended) types.</span>
+
+<span class="sd">  The class first uses ASN1Transcoder to encode valuesin ASN.1 classes, then</span>
+<span class="sd">  DER-encodes the result.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inner</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initialize DERTranscoder.</span>
+
+<span class="sd">    The sole parameter is a reference to an inner decoder. If not specified,</span>
+<span class="sd">    this defaults to an ASN1Transcoder instance with default options.</span>
+
+<span class="sd">    :param object inner: [optional] Inner transcoder</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">inner</span> <span class="o">=</span> <span class="n">inner</span> <span class="ow">or</span> <span class="n">ASN1Transcoder</span><span class="p">()</span>
+
+<div class="viewcode-block" id="DERTranscoder.encode"><a class="viewcode-back" href="../api/bran.html#bran.DERTranscoder.encode">[docs]</a>  <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    DER-encode the given value.</span>
+
+<span class="sd">    Nested values are encoded recursively.</span>
+
+<span class="sd">    :param mixed value: The value to encode.</span>
+<span class="sd">    :return: An DER-encoded ASN.1 value, i.e. a byte sequence.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">pyasn1.codec.der</span> <span class="k">import</span> <span class="n">encoder</span>
+    <span class="k">return</span> <span class="n">encoder</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="DERTranscoder.decode"><a class="viewcode-back" href="../api/bran.html#bran.DERTranscoder.decode">[docs]</a>  <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    DER-deocde the given byte sequence.</span>
+
+<span class="sd">    :param bytes value: The value to decode.</span>
+<span class="sd">    :return: A Python value, the result of passing the parameter through DER</span>
+<span class="sd">        decoding and ASN.1 decoding.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">pyasn1.codec.der</span> <span class="k">import</span> <span class="n">decoder</span>
+    <span class="n">decoded</span> <span class="o">=</span> <span class="n">decoder</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">decoded</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div></div>
+
+
+<div class="viewcode-block" id="ASN1Transcoder"><a class="viewcode-back" href="../api/bran.html#bran.ASN1Transcoder">[docs]</a><span class="k">class</span> <span class="nc">ASN1Transcoder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Transcode Python builtin (and extended) types to and from ASN.1 classes.</span>
+
+<span class="sd">  Note that encoding is lossy with regards to specialized types.</span>
+
+<span class="sd">  For many Python builtin types, there are corresponding universal ASN.1 data</span>
+<span class="sd">  types available.</span>
+
+<span class="sd">  For tuple() and list(), we use explicit tagging (which, when DER-encoded,</span>
+<span class="sd">  takes up a few extra Bytes of space) to disambiguate one kind of sequence</span>
+<span class="sd">  from another. Any collections.Sequence that is not specifically a list is</span>
+<span class="sd">  encoded as a tuple(), any additional type information.</span>
+
+<span class="sd">  Similarly, any collections.Mapping is encoded in the same way, and so is</span>
+<span class="sd">  any collections.Set. If you use special subtypes of these Abstract Base</span>
+<span class="sd">  Classes, that type information is lost.</span>
+
+<span class="sd">  Still, it means that any nested structure will result in an equality-</span>
+<span class="sd">  comparable nested structure, which is all that often times is required.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initialize the transcoder.</span>
+
+<span class="sd">    Keyword arguments are stored as options. Some such recognized options are:</span>
+
+<span class="sd">    :param bool sort: Either a key sorting function, or False. If False, no</span>
+<span class="sd">        sorting is performed. The default is to perform key sorting using the</span>
+<span class="sd">        sorted() function.</span>
+<span class="sd">    :param Mapping registry: A collections.Mapping, with keys specifying either</span>
+<span class="sd">        Python types (not names/strings, but the type objects), or ASN.1 tags</span>
+<span class="sd">        (stringified, e.g. &quot;[0:0:6]&quot;). The value must be a callable that</span>
+<span class="sd">        converts from objects of the Python type to an ASN.1 object or from an</span>
+<span class="sd">        ASN.1 object matching the stringified tag to a Python object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+    <span class="kn">from</span> <span class="nn">pyasn1.type</span> <span class="k">import</span> <span class="n">univ</span><span class="p">,</span> <span class="n">tag</span>
+
+    <span class="c1"># Tags for complex</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">COMPLEX</span> <span class="o">=</span> <span class="n">univ</span><span class="o">.</span><span class="n">Sequence</span><span class="p">(</span>
+      <span class="n">tagSet</span> <span class="o">=</span> <span class="n">univ</span><span class="o">.</span><span class="n">Sequence</span><span class="o">.</span><span class="n">tagSet</span><span class="o">.</span><span class="n">tagExplicitly</span><span class="p">(</span>
+        <span class="n">tag</span><span class="o">.</span><span class="n">Tag</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">tagClassContext</span><span class="p">,</span> <span class="n">tag</span><span class="o">.</span><span class="n">tagFormatConstructed</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">)</span>
+      <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="c1"># Tags for collections.Sequence</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">TUPLE</span> <span class="o">=</span> <span class="n">univ</span><span class="o">.</span><span class="n">Sequence</span><span class="p">(</span>
+      <span class="n">tagSet</span> <span class="o">=</span> <span class="n">univ</span><span class="o">.</span><span class="n">Sequence</span><span class="o">.</span><span class="n">tagSet</span><span class="o">.</span><span class="n">tagExplicitly</span><span class="p">(</span>
+        <span class="n">tag</span><span class="o">.</span><span class="n">Tag</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">tagClassContext</span><span class="p">,</span> <span class="n">tag</span><span class="o">.</span><span class="n">tagFormatConstructed</span><span class="p">,</span> <span class="mh">0x02</span><span class="p">)</span>
+      <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">LIST</span> <span class="o">=</span> <span class="n">univ</span><span class="o">.</span><span class="n">Sequence</span><span class="p">(</span>
+      <span class="n">tagSet</span> <span class="o">=</span> <span class="n">univ</span><span class="o">.</span><span class="n">Sequence</span><span class="o">.</span><span class="n">tagSet</span><span class="o">.</span><span class="n">tagExplicitly</span><span class="p">(</span>
+        <span class="n">tag</span><span class="o">.</span><span class="n">Tag</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">tagClassContext</span><span class="p">,</span> <span class="n">tag</span><span class="o">.</span><span class="n">tagFormatConstructed</span><span class="p">,</span> <span class="mh">0x03</span><span class="p">)</span>
+      <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="c1"># Tags for collections.Mapping</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">MAPPING</span> <span class="o">=</span> <span class="n">univ</span><span class="o">.</span><span class="n">Sequence</span><span class="p">(</span>
+      <span class="n">tagSet</span> <span class="o">=</span> <span class="n">univ</span><span class="o">.</span><span class="n">Sequence</span><span class="o">.</span><span class="n">tagSet</span><span class="o">.</span><span class="n">tagExplicitly</span><span class="p">(</span>
+        <span class="n">tag</span><span class="o">.</span><span class="n">Tag</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">tagClassContext</span><span class="p">,</span> <span class="n">tag</span><span class="o">.</span><span class="n">tagFormatConstructed</span><span class="p">,</span> <span class="mh">0x04</span><span class="p">)</span>
+      <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="c1"># Tags for collections.Set</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">SET</span> <span class="o">=</span> <span class="n">univ</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span>
+      <span class="n">tagSet</span> <span class="o">=</span> <span class="n">univ</span><span class="o">.</span><span class="n">Set</span><span class="o">.</span><span class="n">tagSet</span><span class="o">.</span><span class="n">tagExplicitly</span><span class="p">(</span>
+        <span class="n">tag</span><span class="o">.</span><span class="n">Tag</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">tagClassContext</span><span class="p">,</span> <span class="n">tag</span><span class="o">.</span><span class="n">tagFormatConstructed</span><span class="p">,</span> <span class="mh">0x05</span><span class="p">)</span>
+      <span class="p">)</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="ASN1Transcoder.encode"><a class="viewcode-back" href="../api/bran.html#bran.ASN1Transcoder.encode">[docs]</a>  <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Encode the given Python value.</span>
+
+<span class="sd">    Nested values (for Sequence, Set and Mapping) are recursively encoded.</span>
+
+<span class="sd">    :param mixed value: The value to encode.</span>
+<span class="sd">    :return: An ASN.1 class encapsulating the value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">six</span><span class="o">,</span> <span class="nn">collections</span>
+    <span class="kn">from</span> <span class="nn">pyasn1.type</span> <span class="k">import</span> <span class="n">univ</span><span class="p">,</span> <span class="n">char</span>
+
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">return</span> <span class="n">univ</span><span class="o">.</span><span class="n">Null</span><span class="p">()</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+      <span class="k">return</span> <span class="n">univ</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">integer_types</span><span class="p">):</span>
+      <span class="k">return</span> <span class="n">univ</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+      <span class="k">return</span> <span class="n">univ</span><span class="o">.</span><span class="n">Real</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">complex</span><span class="p">):</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__encode_complex</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">binary_type</span><span class="p">)):</span>
+      <span class="k">return</span> <span class="n">univ</span><span class="o">.</span><span class="n">OctetString</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">text_type</span><span class="p">):</span>
+      <span class="k">return</span> <span class="n">char</span><span class="o">.</span><span class="n">UTF8String</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">))</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__encode_mapping</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Set</span><span class="p">):</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__encode_set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">):</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__encode_sequence</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__encode_from_registry</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+  <span class="k">def</span> <span class="nf">__encode_from_registry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="n">registry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;registry&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+    <span class="c1"># If we find the value class in the registry, we can use that to create</span>
+    <span class="c1"># a custom ASN.1 type.</span>
+    <span class="n">klass</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">encoder</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">encoder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Cannot encode value of type &quot;</span><span class="si">%s</span><span class="s1">&quot;!&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">klass</span><span class="p">,))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">encoder</span><span class="p">):</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Bad registry entry &quot;</span><span class="si">%s</span><span class="s1">&quot; for class &quot;</span><span class="si">%s</span><span class="s1">&quot;; expect a &#39;</span>
+          <span class="s1">&#39;callable!&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">encoder</span><span class="p">,</span> <span class="n">klass</span><span class="p">))</span>
+
+    <span class="c1"># First call is for encoding</span>
+    <span class="k">return</span> <span class="n">encoder</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">__encode_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="c1"># Encode complex() values</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">COMPLEX</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+
+    <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+    <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">val</span>
+
+  <span class="k">def</span> <span class="nf">__encode_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="c1"># Everything except for lists get coerced to a tuple</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TUPLE</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+      <span class="n">base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LIST</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+
+    <span class="c1"># Sequences can&#39;t be re-ordered</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+      <span class="n">val</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">val</span>
+
+  <span class="k">def</span> <span class="nf">__encode_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="c1"># coerce to dict</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAPPING</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+
+    <span class="c1"># Force ordering of keys by default. Turn keys into a list for Python 3.4</span>
+    <span class="c1"># compatibility.</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">sorter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sort&#39;</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sorter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">:</span>
+      <span class="n">keys</span> <span class="o">=</span> <span class="n">sorter</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+      <span class="n">val</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">val</span>
+
+  <span class="k">def</span> <span class="nf">__encode_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="c1"># Everything is a set</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SET</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+
+    <span class="c1"># Force ordering of items by default</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">sorter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sort&#39;</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sorter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">:</span>
+      <span class="n">items</span> <span class="o">=</span> <span class="n">sorter</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+      <span class="n">val</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">val</span>
+
+<div class="viewcode-block" id="ASN1Transcoder.decode"><a class="viewcode-back" href="../api/bran.html#bran.ASN1Transcoder.decode">[docs]</a>  <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decode the given ASN.1 class into a Python value.</span>
+
+<span class="sd">    Nested values (for Sequence, Set and Mapping) are recursively decoded.</span>
+
+<span class="sd">    :param mixed value: The value to decode.</span>
+<span class="sd">    :return: An Python value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># import six, collections</span>
+    <span class="kn">from</span> <span class="nn">pyasn1.type</span> <span class="k">import</span> <span class="n">univ</span><span class="p">,</span> <span class="n">char</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">univ</span><span class="o">.</span><span class="n">Null</span><span class="p">):</span>
+      <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">univ</span><span class="o">.</span><span class="n">Boolean</span><span class="p">):</span>
+      <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">univ</span><span class="o">.</span><span class="n">Integer</span><span class="p">):</span>
+      <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">univ</span><span class="o">.</span><span class="n">Real</span><span class="p">):</span>
+      <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">char</span><span class="o">.</span><span class="n">UTF8String</span><span class="p">):</span>
+      <span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">text_type</span>
+      <span class="k">return</span> <span class="n">text_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">univ</span><span class="o">.</span><span class="n">OctetString</span><span class="p">):</span>
+      <span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">binary_type</span>
+      <span class="k">return</span> <span class="n">binary_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">univ</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">univ</span><span class="o">.</span><span class="n">SequenceOf</span><span class="p">)):</span>
+      <span class="c1"># Look for sub type tags</span>
+      <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">isSameTypeWith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">COMPLEX</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">complex</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="p">)</span>
+
+      <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">isSameTypeWith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TUPLE</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sequence_iter</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+      <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">isSameTypeWith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LIST</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sequence_iter</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+      <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">isSameTypeWith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MAPPING</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sequence_iter</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+          <span class="n">ret</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">univ</span><span class="o">.</span><span class="n">Set</span><span class="p">,</span> <span class="n">univ</span><span class="o">.</span><span class="n">SetOf</span><span class="p">)):</span>
+      <span class="n">ret</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+      <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sequence_iter</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__decode_from_registry</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+  <span class="k">def</span> <span class="nf">__decode_from_registry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="n">registry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;registry&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+    <span class="c1"># If we find the value tagset in the registry, we can use that to create</span>
+    <span class="c1"># a custom ASN.1 type.</span>
+    <span class="kn">from</span> <span class="nn">.util</span> <span class="k">import</span> <span class="n">stringify</span>
+    <span class="n">tagset</span> <span class="o">=</span> <span class="n">stringify</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">tagSet</span><span class="p">)</span>
+    <span class="n">decoder</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tagset</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">decoder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Cannot decode value tag set &quot;</span><span class="si">%s</span><span class="s1">&quot;!&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tagset</span><span class="p">,))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">decoder</span><span class="p">):</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Bad registry entry &quot;</span><span class="si">%s</span><span class="s1">&quot; for tag set &quot;</span><span class="si">%s</span><span class="s1">&quot;; expect a &#39;</span>
+          <span class="s1">&#39;callable!&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">decoder</span><span class="p">,</span> <span class="n">tagset</span><span class="p">))</span>
+
+    <span class="c1"># First call is for encoding</span>
+    <span class="k">return</span> <span class="n">decoder</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">__sequence_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="p">):</span>
+    <span class="c1"># Iterate through a univ.Sequence, decode and yield each item</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+        <span class="k">yield</span> <span class="n">item</span>
+        <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+      <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="k">raise</span> <span class="ne">StopIteration</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, Jens Finkhaeuser.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/jfinkhaeuser/bran" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
