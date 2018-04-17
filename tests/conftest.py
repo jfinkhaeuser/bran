@@ -2,7 +2,7 @@
 """Test suite for bran."""
 
 __author__ = 'Jens Finkhaeuser'
-__copyright__ = 'Copyright (c) 2017 Jens Finkhaeuser'
+__copyright__ = 'Copyright (c) 2017-2018 Jens Finkhaeuser'
 __license__ = 'MIT +no-false-attribs'
 __all__ = ()
 
@@ -33,5 +33,3 @@ def nested_data():
     'strings': ("hällo",u"hällo",b"hallo"),
     'dict': x,
   }
-
-

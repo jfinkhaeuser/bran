@@ -2,7 +2,7 @@
 """Test suite for bran.DERTranscoder."""
 
 __author__ = 'Jens Finkhaeuser'
-__copyright__ = 'Copyright (c) 2017 Jens Finkhaeuser'
+__copyright__ = 'Copyright (c) 2017-2018 Jens Finkhaeuser'
 __license__ = 'MIT +no-false-attribs'
 __all__ = ()
 
