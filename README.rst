@@ -1,6 +1,7 @@
 |Posix Build Status| |Windows Build Status| |Docs| |License|
 |PyPI| |Python Versions| |Package Format| |Package Status|
 
+|Logo|
 
 Bran provides transcoders for `ASN.1 <https://en.wikipedia.org/wiki/Abstract_Syntax_Notation_One>`__
 serialization and deserialization, and `DER <https://en.wikipedia.org/wiki/X.690#DER_encoding>`__-encoding.
@@ -88,3 +89,4 @@ Licensed under MITNFA (MIT +no-false-attribs) License. See the
    :target: https://pypi.python.org/pypi/bran/
 .. |Package Status| image:: https://img.shields.io/pypi/status/bran.svg
    :target: https://pypi.python.org/pypi/bran/
+.. |Logo| image:: https://raw.githubusercontent.com/jfinkhaeuser/bran/master/docs/images/bran_logo_256.png
