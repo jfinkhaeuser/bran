@@ -73,6 +73,9 @@ License
 Licensed under MITNFA (MIT +no-false-attribs) License. See the
 `LICENSE.txt <https://github.com/jfinkhaeuser/bran/blob/master/LICENSE.txt>`__ file for details.
 
+"Cereal bowl" logo image Copyright (c) Jens Finkhaeuser. All rights reserved.
+Made by `Moreven B <http://morevenb.com/>`__.
+
 .. |Posix Build Status| image:: https://travis-ci.org/jfinkhaeuser/bran.svg?branch=master
    :target: https://travis-ci.org/jfinkhaeuser/bran
 .. |Windows Build Status| image:: https://ci.appveyor.com/api/projects/status/tfl0wl9mvg5dvsid/branch/master?svg=true
