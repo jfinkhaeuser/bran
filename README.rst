@@ -6,6 +6,8 @@
 Bran provides transcoders for `ASN.1 <https://en.wikipedia.org/wiki/Abstract_Syntax_Notation_One>`__
 serialization and deserialization, and `DER <https://en.wikipedia.org/wiki/X.690#DER_encoding>`__-encoding.
 
+`Now lives at Codeberg <https://codeberg.org/jfinkhaeuser/bran>`__
+
 The purpose is to provide a serialization format for native Python types,
 such as nested dicts, whose serialization is unambiguous and stable. That
 is two values with the same contents serialize to the same byte string.
